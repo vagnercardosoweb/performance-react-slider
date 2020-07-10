@@ -1,0 +1,13 @@
+{
+  "name": "performance-react-slider",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "mdx-deck ./index.mdx",
+    "build": "mdx-deck build ./index.mdx"
+  },
+  "dependencies": {
+    "mdx-deck": "^4.1.1"
+  }
+}

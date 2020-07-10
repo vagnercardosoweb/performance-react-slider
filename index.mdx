@@ -1,0 +1,204 @@
+import { future, highlight } from '@mdx-deck/themes'
+
+export const theme = {
+  ...future,
+  ...highlight
+}
+
+<Head>
+  <title>Slide</title>
+</Head>
+
+<h3>Performance no ReactJS / React Native</h3>
+<p>Vagner Cardoso <b style={{ textDecoration: 'underline' }}>vagnercardosoweb@gmail.com</b></p>
+
+---
+
+<h1>O que veremos?</h1>
+
+<Steps>
+  <span>Imutabilidade para performance</span>
+  <span>Utilização do React DevToools</span>
+  <span>Aplicação dos hooks para performar componentes</span>
+  <span>Memorização de componentes com React.memo</span>
+  <span>Virtualização de grandes listas de dados</span>
+  <span>Code Splitting no React para Web</span>
+</Steps>
+
+---
+
+<h3>Imutabilidade</h3>
+
+Significa que nunca é alterado o valor de ORIGEM
+e sim ele cria um novo valor com base no antigo.
+
+```tsx
+const [projects, setProjects] = useState(['Powpay', 'Super Comics', 'Turupom']);
+
+// Nesse exmplo ele não cria um novo valor e sim altera o existente
+// com isso o react não vai saber diferenciar, porque o método (push)
+// ele não cria um novo valor e sim altera.
+projects.push('FreteWay');
+setProjects(users)
+
+// Nesse exemplo ele cria um novo array com base no antigo
+// e com isso o react consegue fazer a comparação para renderizar.
+setProjects([...projects, 'FreteWay'])
+```
+
+---
+
+<h3>Ferramentas de Desenvolvedor</h3>
+
+React DevTools: Identificar gargalos na renderização de componentes.
+
+---
+
+<p style={{fontSize: 50}}>useMemo</p>
+
+Memorizar um valor calculado dentro do componente.
+
+---
+
+<p style={{fontSize: 50}}>useCallback</p>
+
+Memorizar uma função criada dentro do componente.
+
+---
+
+<p style={{fontSize: 50}}>Reconciliation</p>
+
+<span>A cada atualização de propriedade e estado, o React reconstrói a árvore de um elemento</span>
+<span>e a compara com a anterior. Caso tenha mudado, atualiza na DOM.</span>
+
+---
+
+<p style={{fontSize: 50}}>E os elementos filhos?</p>
+
+<span>Todos elementos filhos também são renderizados novamente,</span>
+<span> maioria das vezes sem necessidade 😳</span>
+
+<p style={{margin: 20}}><b>E como resolvemos isso?</b></p>
+
+<span>Utilizando o carinha <mark>React.memo</mark>, ele vai memorizar o componente em sí.</span>
+<span>Ou seja, só irá renderizar novamente quando alguma propriedade, estado dele mudar.</span>
+
+---
+
+<p style={{fontSize: 50}}>Observação sobre <mark>React.memo</mark></p>
+
+<span>Devemos usar o React.memo principalmente em situações que componentes sofrem múltiplos </span>
+<span style={{marginBottom: 50}}>ciclos de renderização durante o tempo de vida da aplicação.</span>
+
+<span>Se aplica muito bem para componentes totalmente visuais que retornam os mesmos </span>
+<span>dados baseado nas propriedades e estados que recebe.</span>
+
+---
+
+<p style={{fontSize: 50}}>Virtualizando Longs Listas</p>
+
+<span>Como renderizar grandes listas e tabelas de dados?</span>
+<span style={{marginBottom: 50}}>A virtualização permite renderizar apenas os componentes que aparecem em tela.</span>
+
+<span>Esta técnica somente renderiza um pequeno conjunto de suas linhas e pode reduzir drasticamente o </span>
+<span>tempo que ele leva para re-renderizar os componentes bem como o número de nós criados no DOM.</span>
+
+---
+
+<p style={{fontSize: 50}}>Como implementar?</p>
+
+Existe algumas libs para esse trabalho e entre as mais populares:
+
+<a href="https://react-window.now.sh/#/examples/list/fixed-size">react-window</a>
+<a href="https://bvaughn.github.io/react-virtualized/#/">react-virtualized</a>
+
+---
+
+<p style={{fontSize: 50}}>Code Splitting</p>
+
+<span>Diminuir o bundle dividindo-o em pedaços menores.</span>
+<span>Importar funções ou componentes somente se precisarmos.</span>
+
+---
+
+<p style={{fontSize: 50}}>Import dinâmico</p>
+
+Segnifica que a importação só irá ocorrer no momento de alguma ação do usuário.
+
+```tsx
+const App: React.FC = () => {
+  const functionName = useCallback(async () => {
+    const functionImpported = await import('path');
+
+    // utilização
+    functionImpported(...arguments);
+  }, []);
+
+  return (
+    <button onClick={functionName} type="button">Clique aqui...</button>
+  );
+}
+
+export default App;
+```
+
+---
+
+<p style={{fontSize: 50}}>Tem como fazer com componentes?</p>
+
+<span><b>React.lazy</b></span>
+<span>Permite a você renderizar uma importação dinâmica como se fosse um componente comum.</span>
+
+<p style={{margin: 20}}></p>
+
+<span><b>React.Suspense</b></span>
+<span>Ele vai aguardar até que o componente será montado e por fim exibe em tela.</span>
+
+---
+
+<p style={{fontSize: 50}}>Exemplo</p>
+
+```tsx
+import React, { Suspense } from 'react';
+
+const OtherComponent = React.lazy(() => import('./OtherComponent'));
+
+const MyComponent: React.FC = () => {
+  return (
+    <div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <OtherComponent />
+      </Suspense>
+    </div>
+  );
+}
+```
+
+---
+
+Também é muito utilizado nas rotas da aplicação.
+
+```tsx
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+const Home = lazy(() => import('./routes/Home'));
+const About = lazy(() => import('./routes/About'));
+
+const App = () => (
+  <Router>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Switch>
+        <Route exact path="/" component={Home}/>
+        <Route path="/about" component={About}/>
+      </Switch>
+    </Suspense>
+  </Router>
+);
+```
+
+---
+
+Obrigado...
+
+Vamos a um exemplo prático.
