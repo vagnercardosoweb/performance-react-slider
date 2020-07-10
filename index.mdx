@@ -30,13 +30,13 @@ export const theme = {
 
 <h3>Imutabilidade</h3>
 
-Significa que nunca é alterado o valor de ORIGEM
-e sim ele cria um novo valor com base no antigo.
+<span>Significa que nunca é alterado o valor de ORIGEM e sim ele cria um novo valor com base no antigo.<span>
+<span>Com isso o react saberá da melhor forma apenas atualizar oque é necessário e com performance.</span>
 
 ```tsx
 const [projects, setProjects] = useState(['ProjectName', 'ProjectName One', 'ProjectName Two']);
 
-// Nesse exmplo ele não cria um novo valor e sim altera o existente
+// Nesse exemplo ele não cria um novo valor e sim altera o existente
 // com isso o react não vai saber diferenciar, porque o método (push)
 // ele não cria um novo valor e sim altera.
 projects.push('NewProject');
