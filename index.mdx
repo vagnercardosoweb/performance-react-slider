@@ -34,17 +34,17 @@ Significa que nunca é alterado o valor de ORIGEM
 e sim ele cria um novo valor com base no antigo.
 
 ```tsx
-const [projects, setProjects] = useState(['Powpay', 'Super Comics', 'Turupom']);
+const [projects, setProjects] = useState(['ProjectName', 'ProjectName One', 'ProjectName Two']);
 
 // Nesse exmplo ele não cria um novo valor e sim altera o existente
 // com isso o react não vai saber diferenciar, porque o método (push)
 // ele não cria um novo valor e sim altera.
-projects.push('FreteWay');
+projects.push('NewProject');
 setProjects(users)
 
 // Nesse exemplo ele cria um novo array com base no antigo
 // e com isso o react consegue fazer a comparação para renderizar.
-setProjects([...projects, 'FreteWay'])
+setProjects([...projects, 'NewProject'])
 ```
 
 ---
@@ -57,13 +57,69 @@ React DevTools: Identificar gargalos na renderização de componentes.
 
 <p style={{fontSize: 50}}>useMemo</p>
 
-Memorizar um valor calculado dentro do componente.
+<span>Memorizar um valor calculado dentro do componente.</span>
+<span>Todo calculo que você precisa na renderização você por boa prática deve usar o useMemo.</span>
+
+---
+
+<p style={{fontSize: 50}}>Exemplo</p>
+
+<span>Essa variável so irá renderizar novamente se o estado <b>POSTS</b> mudar.</span>
+
+```tsx
+const [posts, setPosts] = useState<IPosts[]>([]);
+
+// ...
+
+const postFormatted = useMemo(() => {
+  return posts.map(post => ({
+    ...post,
+    titleMin:
+      post.title.length > 40
+        ? post.title.substr(0, 40).concat('...')
+        : post.title,
+  }));
+}, [posts]); // Se mudar executa novamente.
+
+// ...
+
+return (
+  <div>
+    {postFormatted.map(...)}
+  </div>
+);
+```
 
 ---
 
 <p style={{fontSize: 50}}>useCallback</p>
 
-Memorizar uma função criada dentro do componente.
+<span>Memorizar uma função criada dentro do componente.</span>
+<span>Você pode usar em todas funções sem medo o useCallback.</span>
+
+---
+<p style={{fontSize: 50}}>Exemplo</p>
+
+<span>Ou seja essa função so irá renderizar novamente se o <b>estado URL mudar.</b></span>
+
+```tsx
+const [url, setUrl] = useState<string>('https://api...');
+
+// ...
+
+const fetchPosts = useCallback(async function () {
+  const response = await fetch(url);
+  const responseJson = await response.json();
+
+  setPosts(responseJson);
+}, [url]); // Se mudar executa novamente.
+
+useEffect(() => {
+  fetchPosts();
+}, [fetchPosts]);
+
+// ...
+```
 
 ---
 
@@ -93,6 +149,18 @@ Memorizar uma função criada dentro do componente.
 
 <span>Se aplica muito bem para componentes totalmente visuais que retornam os mesmos </span>
 <span>dados baseado nas propriedades e estados que recebe.</span>
+
+---
+<p style={{fontSize: 50}}>Exemplo</p>
+
+<span>Caso use o componente em algum outro local ele só será renderizado novamente </span>
+<span>se as <b>propriedades</b> ou <b>estado</b> interno dele mudar, e se a do <b>PAI DELE</b> mudar ele n sofre renderização.</span>
+
+```tsx
+const MyComponent = React.memo(function MyComponent(props) {
+  /* só re-renderiza se as prop forem alteradas */
+});
+```
 
 ---
 
@@ -200,6 +268,11 @@ const App = () => (
 
 ---
 
-Obrigado...
+Links uteis.
 
-Vamos a um exemplo prático.
+<span><a href="https://pt-br.reactjs.org/docs/optimizing-performance.html">Otimizando Performance</a></span>
+<span><a href="https://github.com/vagnercardosoweb/performance-react-project">Link do projeto.</a></span>
+<span><a href="https://github.com/vagnercardosoweb/performance-react-slider">Link do projeto do slider.</a></span>
+<span><a href="https://github.com/jxnblk/mdx-deck">MDX Deck | Gerador de Apresentações</a></span>
+
+Obrigado, até a próxima.
